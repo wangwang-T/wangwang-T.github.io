@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旺旺命理馆 · 旺旺解命</title>
+    <style>
+        :root {
+            --east-gold: #d4af37;
+            --west-purple: #7b68ee;
+            --bg-dark: #0a0a0c;
+        }
+        body {
+            margin: 0; padding: 20px;
+            background: var(--bg-dark);
+            font-family: -apple-system, "PingFang SC", sans-serif;
+            color: white;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
+        }
+        .header { 
+            margin-top: 30px; 
+            text-align: center; 
+            width: 100%;
+            max-width: 600px;
+        }
+        .header h1 { 
+            font-size: 2.2rem; 
+            letter-spacing: 5px; 
+            color: #fff; 
+            margin-bottom: 10px; 
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+        .header p { 
+            color: #888; 
+            font-size: 0.9rem; 
+            letter-spacing: 2px;
+            border-bottom: 1px dashed #7b68ee40;
+            padding-bottom: 20px;
+        }
+
+        .card {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(18, 16, 28, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7);
+            padding: 2.2rem 1.8rem;
+            margin: 20px 0;
+            border-top: 4px solid var(--east-gold);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            color: var(--east-gold);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .card .sub {
+            text-align: center;
+            color: #a389b5;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #c9b9e0;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        label i {
+            color: #d4af37;
+            font-style: normal;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: #221f33;
+            border: 2px solid #363057;
+            border-radius: 28px;
+            padding: 0.9rem 1.5rem;
+            font-size: 1rem;
+            color: #f0e9ff;
+            outline: none;
+            box-shadow: inset 0 5px 8px rgba(0,0,0,0.4);
+            font-family: inherit;
+        }
+
+        textarea {
+            border-radius: 20px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #d4af37;
+        }
+
+        .gold-button {
+            background: linear-gradient(165deg, #b28a2b, #e9c45e);
+            border: none;
+            border-radius: 48px;
+            padding: 1rem 1.8rem;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #1a1326;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 1.8rem 0 2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+
+        .gold-button:hover {
+            background: linear-gradient(165deg, #c69c2d, #f8da7e);
+            transform: scale(1.01);
+        }
+
+        .result-box {
+            background: #19162b;
+            border-radius: 28px;
+            border: 1px solid #7b68ee60;
+            padding: 1.8rem;
+            min-height: 150px;
+            color: #f0e6d5;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: inset 0 5px 12px #00000060;
+        }
+
+        .result-box:empty::before {
+            content: "✨ 输入你的信息，旺旺给你扒得明明白白……";
+            color: #6a6190;
+            font-style: italic;
+        }
+
+        .badge {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 0.8rem;
+            color: #7b68eeaa;
+            margin-top: 1rem;
+            gap: 1.2rem;
+        }
+
+        .badge span i {
+            color: #d4af37;
+            margin-right: 0.2rem;
+        }
+
+        .method-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .method-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #ddd;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+        .method-btn.active {
+            background: var(--east-gold);
+            color: #1a1326;
+            font-weight: bold;
+            border-color: var(--east-gold);
+        }
+
+        .footer { 
+            margin-top: auto; 
+            padding: 30px; 
+            color: #555; 
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1> 旺旺命理馆</h1>
+        <p>不问吉凶，只论全局 | 旺旺给你扒得明明白白</p>
+    </div>
+
+    <div class="card">
+        <h2>⚛️ 旺旺解命</h2>
+        <div class="sub">清醒毒舌 · 只给方略</div>
+
+        <div class="method-selector">
+            <div class="method-btn active" id="eastBtn">☯️ 八字</div>
+            <div class="method-btn" id="westBtn">🃏 塔罗</div>
+        </div>
+
+        <div class="input-group">
+            <label><i>👤</i> 你的名字</label>
+            <input type="text" id="userName" placeholder="例: 王小明" value="王小明">
+        </div>
+
+        <div class="input-group">
+            <label><i>📅</i> 出生时间</label>
+            <input type="text" id="birthInfo" placeholder="例: 1995.8.12" value="1995.8.12">
+        </div>
+
+        <div class="input-group">
+            <label><i>🎯</i> 所求之事</label>
+            <textarea id="queryTopic" placeholder="例: 今年能不能跳槽涨薪？感情会不会遇到正缘？财运如何？">今年能不能跳槽涨薪</textarea>
+        </div>
+
+        <button class="gold-button" id="divineBtn"> 🔥 叩问天机 🔥 </button>
+
+        <div class="result-box" id="resultDisplay"></div>
+        
+        <div class="badge">
+            <span><i>⚡</i> 旺旺</span>
+            <span><i>💬</i> 拒绝鸡汤</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 旺旺 | 所有的发生，皆是最好的安排
+    </div>
+
+    <script>
+        // 你的凭证
+        const WORKFLOW_ID = "7611462445819772979";
+        const PAT = "pat_LASCaaipY7gv6YzX8fVC5iRAV8YRXpVwD5lEbi8WWzx9YLJepv631QaN8N6HoDrZ";
+        const API_URL = "https://api.coze.cn/v1/workflow/stream_run";
+
+        const userNameInput = document.getElementById('userName');
+        const birthInfoInput = document.getElementById('birthInfo');
+        const queryTopicInput = document.getElementById('queryTopic');
+        const divineBtn = document.getElementById('divineBtn');
+        const resultDisplay = document.getElementById('resultDisplay');
+        const eastBtn = document.getElementById('eastBtn');
+        const westBtn = document.getElementById('westBtn');
+
+        let currentMethod = '八字';
+        
+        eastBtn.addEventListener('click', () => {
+            eastBtn.classList.add('active');
+            westBtn.classList.remove('active');
+            currentMethod = '八字';
+        });
+        
+        westBtn.addEventListener('click', () => {
+            westBtn.classList.add('active');
+            eastBtn.classList.remove('active');
+            currentMethod = '塔罗';
+        });
+
+        // 提取纯中文文本的函数
+        function extractChineseText(text) {
+            if (!text) return '';
+            
+            // 匹配中文字符（包括中文标点）
+            const chineseRegex = /[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\uff01-\uff0f\uff1a-\uff20\uff3b-\uff40\uff5b-\uff65\u2014\u2018\u2019\u201c\u201d\u2026\u3001\u3002]/g;
+            const chineseChars = text.match(chineseRegex);
+            
+            if (chineseChars) {
+                return chineseChars.join('');
+            }
+            
+            return '';
+        }
+
+        // 清理假设性文字的函数
+        function removeHypothetical(text) {
+            if (!text) return '';
+            
+            // 去除假设性开头和重复的"你没提供信息"类内容
+            let cleaned = text
+                .replace(/[你您]是来考验我[^。]*。?/g, '')
+                .replace(/连[^都]*都没说/g, '')
+                .replace(/合着我要[^？]*？/g, '')
+                .replace(/真当我是[^？]*？/g, '')
+                .replace(/难不成[^？]*？/g, '')
+                .replace(/别跟我[^！]*！/g, '')
+                .replace(/我没那闲工夫[^！]*！/g, '')
+                .replace(/赶紧把[^！]*！/g, '')
+                .replace(/听好了[^，]*，/g, '')
+                .replace(/清醒点[！!]/g, '')
+                .replace(/别磨磨唧唧[^！]*！/g, '');
+            
+            return cleaned;
+        }
+
+        divineBtn.addEventListener('click', async () => {
+            const userName = userNameInput.value.trim();
+            const birthInfo = birthInfoInput.value.trim();
+            const queryTopic = queryTopicInput.value.trim();
+
+            if (!userName || !birthInfo || !queryTopic) {
+                resultDisplay.innerText = '⚠️ 名字、出生时间和所求之事都不能为空……';
+                return;
+            }
+
+            resultDisplay.innerText = '🔮 星盘转动，旺旺给你算着……';
+            divineBtn.disabled = true;
+            divineBtn.style.opacity = '0.7';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${PAT}`
+                    },
+                    body: JSON.stringify({
+                        workflow_id: WORKFLOW_ID,
+                        parameters: {
+                            user_name: userName,
+                            birth_info: birthInfo,
+                            query_topic: currentMethod + '：' + queryTopic
+                        }
+                    })
+                });
+
+                const responseText = await response.text();
+                
+                // 解析返回的数据
+                let finalAnswer = '';
+                
+                try {
+                    // 解析最外层的JSON
+                    const outerData = JSON.parse(responseText);
+                    
+                    // 获取content字段
+                    if (outerData.content) {
+                        const contentStr = typeof outerData.content === 'string' 
+                            ? outerData.content 
+                            : JSON.stringify(outerData.content);
+                        
+                        // 尝试提取answer字段
+                        const answerMatch = contentStr.match(/"answer":"(.*?)"(?=,|\})/s);
+                        if (answerMatch) {
+                            // 提取answer里的内容
+                            let rawAnswer = answerMatch[1];
+                            
+                            // 清理转义字符
+                            rawAnswer = rawAnswer
+                                .replace(/\\n/g, '\n')
+                                .replace(/\\"/g, '"')
+                                .replace(/\\/g, '');
+                            
+                            // 提取纯中文
+                            finalAnswer = extractChineseText(rawAnswer);
+                            
+                            // 如果提取到的中文太短，可能不是真正的答案
+                            if (finalAnswer.length < 20) {
+                                // 尝试用另一种方式
+                                finalAnswer = rawAnswer.replace(/[^\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]/g, '');
+                            }
+                        } else {
+                            // 如果没有answer字段，直接提取纯中文
+                            finalAnswer = extractChineseText(contentStr);
+                        }
+                    } else if (outerData.answer) {
+                        // 如果有直接answer字段
+                        finalAnswer = extractChineseText(outerData.answer);
+                    }
+                    
+                    // 清理假设性文字
+                    finalAnswer = removeHypothetical(finalAnswer);
+                    
+                    // 如果清理后太短，可能清理过度，用原中文
+                    if (finalAnswer.length < 50 && finalAnswer.length > 0) {
+                        // 重新提取中文但不清理假设性文字
+                        if (outerData.content) {
+                            const contentStr = typeof outerData.content === 'string' 
+                                ? outerData.content 
+                                : JSON.stringify(outerData.content);
+                            const answerMatch = contentStr.match(/"answer":"(.*?)"(?=,|\})/s);
+                            if (answerMatch) {
+                                let rawAnswer = answerMatch[1]
+                                    .replace(/\\n/g, '\n')
+                                    .replace(/\\"/g, '"')
+                                    .replace(/\\/g, '');
+                                finalAnswer = rawAnswer.replace(/[^\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\n]/g, '');
+                            }
+                        }
+                    }
+                    
+                } catch (e) {
+                    console.log('解析出错:', e);
+                    // 解析失败时，直接从响应文本提取中文
+                    finalAnswer = extractChineseText(responseText);
+                }
+
+                // 显示结果
+                if (finalAnswer && finalAnswer.length > 20) {
+                    resultDisplay.innerText = finalAnswer;
+                } else {
+                    resultDisplay.innerText = `${userName}，你的命盘是：` + (finalAnswer || '卦象已显，但天机不可泄露……再试一次？');
+                }
+
+            } catch (error) {
+                resultDisplay.innerText = `❌ 网络开小差了：${error.message}`;
+            } finally {
+                divineBtn.disabled = false;
+                divineBtn.style.opacity = '1';
+            }
+        });
+
+        // 回车触发
+        userNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') divineBtn.click();
+        });
+        birthInfoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') divineBtn.click();
+        });
+    </script>
+</body>
+</html>
